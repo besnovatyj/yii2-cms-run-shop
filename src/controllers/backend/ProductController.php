@@ -8,14 +8,18 @@
 namespace Besnovatyj\RunShop\controllers\backend;
 
 use DomainException;
-use Besnovatyj\RunShop\entities\product\Product;
+use Besnovatyj\Images\helpers\ImageActionsMap;
+use Besnovatyj\Kernel\controller\ControllerTrait;
 use Besnovatyj\RunShop\entities\product\Modification;
-use Besnovatyj\RunShop\forms\backend\product\PhotosForm;
+use Besnovatyj\RunShop\entities\product\Photo;
+use Besnovatyj\RunShop\entities\product\Product;
 use Besnovatyj\RunShop\forms\backend\product\PriceForm;
 use Besnovatyj\RunShop\forms\backend\product\ProductCreateForm;
 use Besnovatyj\RunShop\forms\backend\product\ProductEditForm;
 use Besnovatyj\RunShop\forms\backend\product\QuantityForm;
 use Besnovatyj\RunShop\forms\backend\search\ProductSearch;
+use Besnovatyj\RunShop\image\ProductImageOwner;
+use Besnovatyj\RunShop\repositories\ProductRepository;
 use Besnovatyj\RunShop\services\manage\ProductManageService;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -27,14 +31,27 @@ use yii\web\Response;
 
 class ProductController extends Controller
 {
-    use \Besnovatyj\Kernel\controller\ControllerTrait;
+    use ControllerTrait;
 
     private ProductManageService $service;
+    private ProductRepository $productRepo;
 
-    public function __construct($id, $module, ProductManageService $service, $config = [])
+    public function __construct($id, $module, ProductManageService $service, ProductRepository $productRepo, $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->service = $service;
+        $this->productRepo = $productRepo;
+    }
+
+    /**
+     * Фото товара управляются модулем изображений (standalone actions).
+     */
+    public function actions(): array
+    {
+        return ImageActionsMap::get(
+            Photo::class,
+            fn(int $id) => new ProductImageOwner($this->productRepo->get($id), $this->productRepo),
+        );
     }
 
     public function behaviors(): array
@@ -46,9 +63,6 @@ class ProductController extends Controller
                     'delete' => ['POST'],
                     'activate' => ['POST'],
                     'draft' => ['POST'],
-                    'delete-photo' => ['POST'],
-                    'move-photo-up' => ['POST'],
-                    'move-photo-down' => ['POST'],
                 ],
             ],
         ];
@@ -88,20 +102,9 @@ class ProductController extends Controller
             'pagination' => false,
         ]);
 
-        $photosForm = new PhotosForm();
-        if ($photosForm->load(Yii::$app->request->post()) && $photosForm->validate()) {
-            try {
-                $this->service->addPhotos($product->id, $photosForm);
-                return $this->redirect(['view', 'id' => $product->id]);
-            } catch (DomainException $e) {
-                $this->handleDomainException($e, 'Ошибка');
-            }
-        }
-
         return $this->render('view', [
             'product' => $product,
             'modificationsProvider' => $modificationsProvider,
-            'photosForm' => $photosForm,
         ]);
     }
 
@@ -249,43 +252,6 @@ class ProductController extends Controller
             Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
         }
         return $this->redirect(['view', 'id' => $id]);
-    }
-
-    /**
-     * @param int $id
-     * @param int $photo_id
-     * @return Response
-     */
-    public function actionDeletePhoto(int $id, int $photo_id): Response
-    {
-        try {
-            $this->service->removePhoto($id, $photo_id);
-        } catch (DomainException $e) {
-            Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
-        }
-        return $this->redirect(['view', 'id' => $id, '#' => 'photos']);
-    }
-
-    /**
-     * @param int $id
-     * @param int $photo_id
-     * @return Response
-     */
-    public function actionMovePhotoUp(int $id, int $photo_id): Response
-    {
-        $this->service->movePhotoUp($id, $photo_id);
-        return $this->redirect(['view', 'id' => $id, '#' => 'photos']);
-    }
-
-    /**
-     * @param int $id
-     * @param int $photo_id
-     * @return Response
-     */
-    public function actionMovePhotoDown(int $id, int $photo_id): Response
-    {
-        $this->service->movePhotoDown($id, $photo_id);
-        return $this->redirect(['view', 'id' => $id, '#' => 'photos']);
     }
 
     /**

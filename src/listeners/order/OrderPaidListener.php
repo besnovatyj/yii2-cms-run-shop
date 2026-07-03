@@ -32,7 +32,7 @@ class OrderPaidListener
     {
         $message = $this->mailer
             ->compose(
-                ['html' => 'RunShop/order/customer/paid-html', 'text' => 'RunShop/order/customer/paid-text'],
+                ['html' => '@Besnovatyj/RunShop/mails/order/customer/paid-html', 'text' => '@Besnovatyj/RunShop/mails/order/customer/paid-text'],
                 ['order' => $order]
             )
             ->setTo($order->customerData->email)
@@ -66,7 +66,7 @@ class OrderPaidListener
         $admin_email = 'prorunislife@gmail.com';
         $sent = $this->mailer
             ->compose(
-                ['html' => 'RunShop/order/admin/paid-html', 'text' => 'RunShop/order/admin/paid-text'],
+                ['html' => '@Besnovatyj/RunShop/mails/order/admin/paid-html', 'text' => '@Besnovatyj/RunShop/mails/order/admin/paid-text'],
                 ['order' => $order]
             )
             ->setTo($admin_email)

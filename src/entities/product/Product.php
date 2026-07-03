@@ -8,20 +8,18 @@
 namespace Besnovatyj\RunShop\entities\product;
 
 use DomainException;
-use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 use Besnovatyj\Meta\MetaBehavior;
 use Besnovatyj\DomainEvents\AggregateRoot;
 use Besnovatyj\Meta\Meta;
 use Besnovatyj\DomainEvents\EventTrait;
+use Besnovatyj\PessimisticLock\PessimisticLockBehavior;
 use Besnovatyj\RunShop\entities\Brand;
 use Besnovatyj\RunShop\entities\category\Category;
 use Besnovatyj\RunShop\entities\product\events\ProductAppearedInStock;
 use Besnovatyj\RunShop\entities\product\queries\ProductQuery;
 use Besnovatyj\RunShop\entities\Tag;
-use shop\entities\User\WishlistItem;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\web\UploadedFile;
 
 /**
  * @property int $id
@@ -129,6 +127,14 @@ class Product extends ActiveRecord implements AggregateRoot
         $this->category_id = $categoryId;
     }
 
+    /**
+     * Устанавливает главную фотографию (управляется модулем изображений).
+     */
+    public function setMainPhoto(?int $photoId): void
+    {
+        $this->main_photo_id = $photoId;
+    }
+
     public function activate(): void
     {
         if ($this->isActive()) {
@@ -173,14 +179,19 @@ class Product extends ActiveRecord implements AggregateRoot
         return $quantity <= $this->quantity;
     }
 
+    /**
+     * Списывает количество при оформлении заказа.
+     *
+     * Мутирует модификацию/товар в памяти и пересчитывает остаток. Персистентность дирти-модификации
+     * и товара — на вызывающем сервисе (OrderService) в транзакции.
+     */
     public function checkout($modificationId, $quantity): void
     {
         if ($modificationId) {
-            $modifications = $this->modifications;
-            foreach ($modifications as $i => $modification) {
+            foreach ($this->modifications as $modification) {
                 if ($modification->isIdEqualTo($modificationId)) {
                     $modification->checkout($quantity);
-                    $this->updateModifications($modifications);
+                    $this->recalcQuantityFromModifications();
                     return;
                 }
             }
@@ -192,21 +203,14 @@ class Product extends ActiveRecord implements AggregateRoot
     }
 
     /**
-     * @param int $id - Id Характеристики
-     * @param string $value - Записываемое значение
+     * Пересчитывает остаток товара как сумму остатков модификаций.
      */
-    public function setValue(int $id, string $value): void
+    public function recalcQuantityFromModifications(): void
     {
-        $values = $this->values;
-        foreach ($values as $val) {
-            if ($val->isForCharacteristic($id)) {
-                $val->change($value);
-                $this->values = $values;
-                return;
-            }
-        }
-        $values[] = Value::create($id, $value);
-        $this->values = $values;
+        $this->setQuantity(array_sum(array_map(
+            static fn(Modification $modification) => $modification->quantity,
+            $this->modifications,
+        )));
     }
 
     /**
@@ -244,284 +248,6 @@ class Product extends ActiveRecord implements AggregateRoot
             }
         }
         throw new DomainException('Modification is not found.');
-    }
-
-    public function addModification($code, $name, $price, $quantity): void
-    {
-        $modifications = $this->modifications;
-        foreach ($modifications as $modification) {
-            if ($modification->isCodeEqualTo($code)) {
-                throw new DomainException('Modification already exists.');
-            }
-        }
-        $modifications[] = Modification::create($code, $name, $price, $quantity);
-        $this->updateModifications($modifications);
-    }
-
-    public function editModification($id, $code, $name, $price, $quantity): void
-    {
-        $modifications = $this->modifications;
-        foreach ($modifications as $i => $modification) {
-            if ($modification->isIdEqualTo($id)) {
-                $modification->edit($code, $name, $price, $quantity);
-                $this->updateModifications($modifications);
-                return;
-            }
-        }
-        throw new DomainException('Modification is not found.');
-    }
-
-    public function removeModification($id): void
-    {
-        $modifications = $this->modifications;
-        foreach ($modifications as $i => $modification) {
-            if ($modification->isIdEqualTo($id)) {
-                unset($modifications[$i]);
-                $this->updateModifications($modifications);
-                return;
-            }
-        }
-        throw new DomainException('Modification is not found.');
-    }
-
-    private function updateModifications(array $modifications): void
-    {
-        $this->modifications = $modifications;
-        $this->setQuantity(array_sum(array_map(function (Modification $modification) {
-            return $modification->quantity;
-        }, $this->modifications)));
-    }
-
-    // Categories
-
-    public function assignCategory(int $id): void
-    {
-        $assignments = $this->categoryAssignments;
-        foreach ($assignments as $assignment) {
-            if ($assignment->isForCategory($id)) {
-                return;
-            }
-        }
-        $assignments[] = CategoryAssignment::create($id);
-        $this->categoryAssignments = $assignments;
-    }
-
-    public function revokeCategory(int $id): void
-    {
-        $assignments = $this->categoryAssignments;
-        foreach ($assignments as $i => $assignment) {
-            if ($assignment->isForCategory($id)) {
-                unset($assignments[$i]);
-                $this->categoryAssignments = $assignments;
-                return;
-            }
-        }
-        throw new DomainException('Assignment is not found.');
-    }
-
-    public function revokeCategories(): void
-    {
-        $this->categoryAssignments = [];
-    }
-
-    // Tags
-
-    public function assignTag(int $id): void
-    {
-        $assignments = $this->tagAssignments;
-        foreach ($assignments as $assignment) {
-            if ($assignment->isForTag($id)) {
-                return;
-            }
-        }
-        $assignments[] = TagAssignment::create($id);
-        $this->tagAssignments = $assignments;
-    }
-
-    public function revokeTag(int $id): void
-    {
-        $assignments = $this->tagAssignments;
-        foreach ($assignments as $i => $assignment) {
-            if ($assignment->isForTag($id)) {
-                unset($assignments[$i]);
-                $this->tagAssignments = $assignments;
-                return;
-            }
-        }
-        throw new DomainException('Assignment is not found.');
-    }
-
-    public function revokeTags(): void
-    {
-        $this->tagAssignments = [];
-    }
-
-    // Photos
-
-    public function addPhoto(UploadedFile $file): void
-    {
-        $photos = $this->photos;
-        $photos[] = Photo::create($file);
-        $this->updatePhotos($photos);
-    }
-
-    public function removePhoto(int $id): void
-    {
-        $photos = $this->photos;
-        foreach ($photos as $i => $photo) {
-            if ($photo->isIdEqualTo($id)) {
-                unset($photos[$i]);
-                $this->updatePhotos($photos);
-                return;
-            }
-        }
-        throw new DomainException('Photo is not found.');
-    }
-
-    public function removePhotos(): void
-    {
-        $this->updatePhotos([]);
-    }
-
-    public function movePhotoUp(int $id): void
-    {
-        $photos = $this->photos;
-        foreach ($photos as $i => $photo) {
-            if ($photo->isIdEqualTo($id)) {
-                if ($prev = $photos[$i - 1] ?? null) {
-                    $photos[$i - 1] = $photo;
-                    $photos[$i] = $prev;
-                    $this->updatePhotos($photos);
-                }
-                return;
-            }
-        }
-        throw new DomainException('Photo is not found.');
-    }
-
-    public function movePhotoDown(int $id): void
-    {
-        $photos = $this->photos;
-        foreach ($photos as $i => $photo) {
-            if ($photo->isIdEqualTo($id)) {
-                if ($next = $photos[$i + 1] ?? null) {
-                    $photos[$i] = $next;
-                    $photos[$i + 1] = $photo;
-                    $this->updatePhotos($photos);
-                }
-                return;
-            }
-        }
-        throw new DomainException('Photo is not found.');
-    }
-
-    public function updatePhotos(array $photos): void
-    {
-        foreach ($photos as $i => $photo) {
-            $photo->setSort($i);
-        }
-        $this->photos = $photos;
-        $this->populateRelation('mainPhoto', reset($photos));
-    }
-
-    // Related products
-
-    public function assignRelatedProduct(int $id): void
-    {
-        $assignments = $this->relatedAssignments;
-        foreach ($assignments as $assignment) {
-            if ($assignment->isForProduct($id)) {
-                return;
-            }
-        }
-        $assignments[] = RelatedAssignment::create($id);
-        $this->relatedAssignments = $assignments;
-    }
-
-    public function revokeRelatedProduct(int $id): void
-    {
-        $assignments = $this->relatedAssignments;
-        foreach ($assignments as $i => $assignment) {
-            if ($assignment->isForProduct($id)) {
-                unset($assignments[$i]);
-                $this->relatedAssignments = $assignments;
-                return;
-            }
-        }
-        throw new DomainException('Assignment is not found.');
-    }
-
-    // Reviews
-
-    public function addReview(int $userId, int $vote, string $text): void
-    {
-        $reviews = $this->reviews;
-        $reviews[] = Review::create($userId, $this->id, $vote, $text);
-        $this->updateReviews($reviews);
-    }
-
-    public function editReview(int $id, int $vote, string $text): void
-    {
-        $this->doWithReview($id, function (Review $review) use ($vote, $text) {
-            $review->edit($vote, $text);
-        });
-    }
-
-    public function activateReview(int $id): void
-    {
-        $this->doWithReview($id, function (Review $review) {
-            $review->activate();
-        });
-    }
-
-    public function draftReview(int $id): void
-    {
-        $this->doWithReview($id, function (Review $review) {
-            $review->draft();
-        });
-    }
-
-    private function doWithReview(int $id, callable $callback): void
-    {
-        $reviews = $this->reviews;
-        foreach ($reviews as $review) {
-            if ($review->isIdEqualTo($id)) {
-                $callback($review);
-                $this->updateReviews($reviews);
-                return;
-            }
-        }
-        throw new DomainException('Review is not found.');
-    }
-
-    public function removeReview(int $id): void
-    {
-        $reviews = $this->reviews;
-        foreach ($reviews as $i => $review) {
-            if ($review->isIdEqualTo($id)) {
-                unset($reviews[$i]);
-                $this->updateReviews($reviews);
-                return;
-            }
-        }
-        throw new DomainException('Review is not found.');
-    }
-
-    private function updateReviews(array $reviews): void
-    {
-        $amount = 0;
-        $total = 0;
-
-        foreach ($reviews as $review) {
-            /** @var $review Review */
-            if ($review->isActive()) {
-                $amount++;
-                $total += $review->getRating();
-            }
-        }
-
-        $this->reviews = $reviews;
-        $this->rating = $amount ? $total / $amount : null;
     }
 
     // Queries
@@ -591,21 +317,13 @@ class Product extends ActiveRecord implements AggregateRoot
         return $this->hasMany(Review::class, ['product_id' => 'id']);
     }
 
-    public function getWishlistItems(): ActiveQuery
-    {
-        return $this->hasMany(WishlistItem::class, ['product_id' => 'id']);
-    }
-
     // Other
 
     public function behaviors(): array
     {
         return [
             MetaBehavior::class,
-            [
-                'class' => SaveRelationsBehavior::class,
-                'relations' => ['categoryAssignments', 'tagAssignments', 'relatedAssignments', 'modifications', 'values', 'photos', 'reviews'],
-            ],
+            PessimisticLockBehavior::class,
         ];
     }
 
@@ -614,15 +332,6 @@ class Product extends ActiveRecord implements AggregateRoot
         return [
             self::SCENARIO_DEFAULT => self::OP_ALL,
         ];
-    }
-
-    public function afterSave($insert, $changedAttributes): void
-    {
-        $related = $this->getRelatedRecords();
-        parent::afterSave($insert, $changedAttributes);
-        if (array_key_exists('mainPhoto', $related)) {
-            $this->updateAttributes(['main_photo_id' => $related['mainPhoto'] ? $related['mainPhoto']->id : null]);
-        }
     }
 
     public function beforeDelete(): bool

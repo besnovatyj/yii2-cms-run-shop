@@ -10,11 +10,10 @@ namespace Besnovatyj\RunShop\entities\order;
 use Besnovatyj\DomainEvents\AggregateRoot;
 use Besnovatyj\DomainEvents\EventTrait;
 use DomainException;
-use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
+use Besnovatyj\RunShop\entities\DeliveryMethod;
 use Besnovatyj\RunShop\repositories\events\OrderCanceled;
 use Besnovatyj\RunShop\repositories\events\OrderCreated;
 use Besnovatyj\RunShop\repositories\events\OrderPaid;
-use modules\shp\entities\DeliveryMethod;
 use modules\user\entities\User;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -162,16 +161,6 @@ class Order extends ActiveRecord implements AggregateRoot
     public function getItems(): ActiveQuery
     {
         return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
-    }
-
-    public function behaviors(): array
-    {
-        return [
-            [
-                'class' => SaveRelationsBehavior::class,
-                'relations' => ['items'],
-            ],
-        ];
     }
 
     public function transactions(): array

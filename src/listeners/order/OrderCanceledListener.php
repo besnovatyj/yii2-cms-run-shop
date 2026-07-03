@@ -31,7 +31,7 @@ class OrderCanceledListener
     {
         $sent = $this->mailer
             ->compose(
-                ['html' => 'RunShop/order/customer/canceled-html', 'text' => 'RunShop/order/customer/canceled-text'],
+                ['html' => '@Besnovatyj/RunShop/mails/order/customer/canceled-html', 'text' => '@Besnovatyj/RunShop/mails/order/customer/canceled-text'],
                 ['order' => $order]
             )
             ->setTo($order->customerData->email)
@@ -58,7 +58,7 @@ class OrderCanceledListener
         $admin_email = 'prorunislife@gmail.com';
         $sent = $this->mailer
             ->compose(
-                ['html' => 'RunShop/order/admin/canceled-html', 'text' => 'RunShop/order/admin/canceled-text'],
+                ['html' => '@Besnovatyj/RunShop/mails/order/admin/canceled-html', 'text' => '@Besnovatyj/RunShop/mails/order/admin/canceled-text'],
                 ['order' => $order]
             )
             ->setTo($admin_email)

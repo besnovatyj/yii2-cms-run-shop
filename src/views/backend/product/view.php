@@ -5,21 +5,20 @@
  * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
  */
 
-use kartik\file\FileInput;
+use Besnovatyj\Images\widgets\upload\Widget as ImagesUploadWidget;
 use Besnovatyj\RunShop\entities\product\Product;
 use Besnovatyj\RunShop\entities\product\Value;
-use Besnovatyj\RunShop\forms\backend\product\PhotosForm;
 use Besnovatyj\RunShop\helpers\ProductHelper;
 use yii\bootstrap5\ActiveForm;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\DetailView;
 
 /* @var $this View */
 /* @var $product Product */
-/* @var $photosForm PhotosForm */
 /* @var $modificationsProvider ActiveDataProvider */
 
 $this->title = $product->name;
@@ -214,74 +213,18 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<div class="card card-primary card-outline card-outline-tabs rounded-0">
-    <div class="card-header p-0 border-bottom-0">
-        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link rounded-0 active blue" id="standart-photos-tab" data-toggle="pill"
-                   href="#standart-photos" role="tab" aria-controls="standart-photos"
-                   aria-selected="true">Photos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link rounded-0 green" id="edit-photos-tab" data-toggle="pill"
-                   href="#edit-photos" role="tab" aria-controls="edit-photos"
-                   aria-selected="false">Edit photos</a>
-            </li>
-        </ul>
-    </div>
+<div class="card rounded-0" id="photos">
+    <div class="card-header"><h5>Фотографии</h5></div>
     <div class="card-body">
-        <div class="tab-content" id="custom-tabs-four-tabContent">
-            <div class="tab-pane fade active show" id="standart-photos" role="tabpanel"
-                 aria-labelledby="standart-photos-tab">
-                <div class="row">
-                    <?php foreach ($product->photos as $photo): ?>
-                        <div class="col-md-2 col-xs-3" style="text-align: center">
-                            <div class="btn-group">
-                                <?= Html::a('<span class="fa fa-arrow-left"></span>', ['move-photo-up', 'id' => $product->id, 'photo_id' => $photo->id], [
-                                    'class' => 'btn  btn-secondary',
-                                    'data-method' => 'post',
-                                ]); ?>
-                                <?= Html::a('<span class="fa fa-trash"></span>', ['delete-photo', 'id' => $product->id, 'photo_id' => $photo->id], [
-                                    'class' => 'btn  btn-secondary',
-                                    'data-method' => 'post',
-                                    'data-confirm' => 'Remove photo?',
-                                ]); ?>
-                                <?= Html::a('<span class="fa fa-arrow-right"></span>', ['move-photo-down', 'id' => $product->id, 'photo_id' => $photo->id], [
-                                    'class' => 'btn  btn-secondary',
-                                    'data-method' => 'post',
-                                ]); ?>
-                            </div>
-                            <div>
-                                <?= Html::a(
-                                    Html::img($photo->getThumbUrl('file', 'thumb'), ['class' => 'img-thumbnail mt-3 mb-3',]),
-                                    $photo->getUploadUrl('file'),
-                                    ['target' => '_blank']
-                                ) ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <?php $form = ActiveForm::begin([
-                    'options' => ['enctype' => 'multipart/form-data'],
-                ]); ?>
-
-                <?= $form->field($photosForm, 'files[]')->label(false)->widget(FileInput::class, [
-                    'options' => [
-                        'accept' => 'image/*',
-                        'multiple' => true,
-                    ]
-                ]) ?>
-                <?= Html::submitButton('Upload', ['class' => 'btn  btn-block btn-success']) ?>
-                <?php ActiveForm::end(); ?>
-            </div>
-            <div class="tab-pane fade" id="edit-photos" role="tabpanel"
-                 aria-labelledby="edit-photos-tab">
-
-            </div>
-        </div>
-    </div>
-    <!-- /.card -->
-    <div class="card-footer clearfix">
+        <?= ImagesUploadWidget::widget([
+            'ownerId'   => $product->id,
+            'endpoints' => [
+                'getImages'    => Url::to(['/RunShop/backend/product/get-images'], true),
+                'setNewSort'   => Url::to(['/RunShop/backend/product/set-new-sort'], true),
+                'upload'       => Url::to(['/RunShop/backend/product/add-image'], true),
+                'deleteImage'  => Url::to(['/RunShop/backend/product/delete-image'], true),
+                'setMainImage' => '/RunShop/backend/product/set-main-image',
+            ],
+        ]) ?>
     </div>
 </div>

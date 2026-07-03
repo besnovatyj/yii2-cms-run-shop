@@ -81,11 +81,25 @@ class OrderService
             $form->note
         );
 
-        $this->transaction->wrap(function () use ($order, $products) {
+        $this->transaction->wrap(function () use ($order, $products, $items) {
             $this->orders->save($order);
+
+            // Явно сохраняем позиции заказа (без SaveRelationsBehavior).
+            foreach ($items as $orderItem) {
+                $orderItem->order_id = $order->id;
+                if (!$orderItem->save()) {
+                    throw new \RuntimeException('Ошибка сохранения позиции заказа.');
+                }
+            }
+
+            // Списание остатков: товар + его модификации (checkout мутировал их в памяти).
             foreach ($products as $product) {
                 $this->products->save($product);
+                foreach ($product->modifications as $modification) {
+                    $modification->save();
+                }
             }
+
             $this->cart->clear();
         });
 

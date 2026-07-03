@@ -1,70 +1,65 @@
 <?php
 
-
 /*
  * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
  */
 
+declare(strict_types=1);
+
 namespace Besnovatyj\RunShop\entities\product;
 
-use Besnovatyj\Upload\heap\UploadBehavior;
-use yii\db\ActiveRecord;
-use yii\web\UploadedFile;
+use Besnovatyj\Images\base\BaseImage;
 
 /**
- * @property int $id
- * @property string $file
- * @property int $sort
+ * Фотография товара (управляется модулем yii2-cms-images).
  *
- * @mixin UploadBehavior
+ * @property int    $id
+ * @property int    $product_id
+ * @property string $file
+ * @property int    $sort
  */
-class Photo extends ActiveRecord
+class Photo extends BaseImage
 {
-    public static function create(UploadedFile $file): self
+    /**
+     * {@inheritdoc}
+     */
+    protected static function getParentAttribute(): string
     {
-        $photo = new static();
-        $photo->file = $file;
-        return $photo;
+        return 'product_id';
     }
 
-    public function setSort($sort): void
+    /**
+     * {@inheritdoc}
+     */
+    protected static function getStorageName(): string
     {
-        $this->sort = $sort;
+        return 'RunShop';
     }
 
-    public function isIdEqualTo($id): bool
-    {
-        return $this->id == $id;
-    }
-
-    public function behaviors(): array
+    /**
+     * {@inheritdoc}
+     */
+    protected static function getThumbProfiles(): array
     {
         return [
-            [
-                'class' => UploadBehavior::class,
-                'attribute' => 'file',
-                'filePath' => '@static/origin/RunShop/products/[[attribute_product_id]]/[[id]].[[extension]]',
-                'fileUrl' => '@staticHostInfo/origin/RunShop/products/[[attribute_product_id]]/[[id]].[[extension]]',
-                'thumbPath' => '@static/cache/RunShop/products/[[attribute_product_id]]/[[profile]]_[[id]].[[extension]]',
-                'thumbUrl' => '@staticHostInfo/cache/RunShop/products/[[attribute_product_id]]/[[profile]]_[[id]].[[extension]]',
-                'thumbs' => [
-                    // backend
-                    'admin' => ['width' => 100, 'height' => 70],
-                    'thumb' => ['width' => 640, 'height' => 480],
-                    // frontend
-                    'cart_list' => ['width' => 150, 'height' => 150],
-                    'cart_widget_list' => ['width' => 150, 'height' => 150],
-                    'product_page' => ['width' => 470, 'height' => 670],
-                    '343x301' => ['width' => 343, 'height' => 301],
-                    'front_widget' => ['width' => 800, 'height' => 800],
-                ],
-            ],
+            // backend
+            'admin'                      => ['width' => 100, 'height' => 70],
+            'thumb'                      => ['width' => 640, 'height' => 480],
+            // frontend
+            'cart_list'                  => ['width' => 150, 'height' => 150],
+            'cart_widget_list'           => ['width' => 57,  'height' => 57],
+            'catalog_list'               => ['width' => 228, 'height' => 228],
+            'catalog_origin'             => ['width' => 1200, 'height' => 1600],
+            'catalog_product_additional' => ['width' => 66,  'height' => 66],
+            'catalog_product_main'       => ['width' => 750, 'height' => 1000],
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function tableName(): string
     {
         return '{{%run_shop_photos}}';
     }
-
 }
