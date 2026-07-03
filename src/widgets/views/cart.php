@@ -1,0 +1,77 @@
+<?php
+
+
+/*
+ * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
+ */
+
+use Besnovatyj\RunShop\cart\Cart;
+use Besnovatyj\RunShop\helpers\PriceHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+/* @var $cart Cart */
+?>
+
+<div id="cart" class="btn-group btn-block">
+    <button type="button" data-toggle="dropdown" data-loading-text="Loading..."
+            class="btn btn-inverse btn-block btn-lg dropdown-toggle" aria-expanded="false">
+        <i class="fa fa-shopping-cart"></i>
+        <span id="cart-total"><?= $cart->getAmount() ?> item(s) - <?= \Yii::$app->formatter->asCurrency($cart->getCost()->getTotal()) ?></span>
+    </button>
+    <ul class="dropdown-menu pull-right">
+        <li>
+            <table class="table table-striped">
+                <?php foreach ($cart->getItems() as $item): ?>
+                    <?php
+                    $product = $item->getProduct();
+                    $url = Url::to(['/RunShop/catalog/product', 'id' => $product->id]);
+                    ?>
+                    <tr>
+                        <td class="text-center">
+                            <?php if ($product->mainPhoto): ?>
+                                <img src="<?= $product->mainPhoto->getThumbUrl('file', 'cart_widget_list') ?>"
+                                     alt="" class="img-thumbnail"/>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-left">
+                            <a href="<?= $url ?>"><?= Html::encode($product->name) ?></a>
+                        </td>
+                        <td class="text-right">x <?= $item->getQuantity() ?></td>
+                        <td class="text-right"><?= \Yii::$app->formatter->asCurrency($item->getCost()) ?></td>
+                        <td class="text-center">
+                            <a href="<?= Url::to(['/RunShop/cart/remove', 'id' => $item->getId()]) ?>" title="Remove"
+                               class="btn btn-danger btn-xs" data-method="post"><i class="fa fa-times"></i></a>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </table>
+        </li>
+        <li>
+            <div>
+                <?php $cost = $cart->getCost(); ?>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="text-right"><strong>Sub-Total:</strong></td>
+                        <td class="text-right"><?= \Yii::$app->formatter->asCurrency($cost->getOrigin()) ?></td>
+                    </tr>
+                    <?php foreach ($cost->getDiscounts() as $discount): ?>
+                        <tr>
+                            <td class="text-right"><strong><?= Html::encode($discount->getName()) ?>:</strong></td>
+                            <td class="text-right"><?= \Yii::$app->formatter->asCurrency($discount->getValue()) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <td class="text-right"><strong>Total:</strong></td>
+                        <td class="text-right"><?= \Yii::$app->formatter->asCurrency($cost->getTotal()) ?></td>
+                    </tr>
+                </table>
+                <p class="text-right"><a
+                            href="<?= Url::to(['/RunShop/cart/index']) ?>"><strong><i
+                                    class="fa fa-shopping-cart"></i> View Cart</strong></a>&nbsp;&nbsp;&nbsp;<a
+                            href="/index.php?route=checkout/checkout"><strong><i
+                                    class="fa fa-share"></i> Checkout</strong></a></p>
+            </div>
+        </li>
+    </ul>
+</div>

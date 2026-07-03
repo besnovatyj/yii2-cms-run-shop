@@ -1,0 +1,60 @@
+<?php
+
+
+/*
+ * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
+ */
+
+declare(strict_types=1);
+
+namespace Besnovatyj\RunShop\migrations;
+
+use Besnovatyj\Kernel\migration\BaseMigration;
+use yii\base\NotSupportedException;
+
+/** 'm<YYMMDD_HHMMSS>_<Name>' */
+class m230518_141560_create_run_shop_categories_tables extends BaseMigration
+{
+  public const string TABLE_NAME = '{{%run_shop_categories}}';
+
+    /**
+     * @throws NotSupportedException
+     */
+    public function safeUp(): void
+    {
+        parent::safeUp();
+
+        if ($this->existTable(static::TABLE_NAME)) {
+            return;
+        }
+
+        $this->createTable(static::TABLE_NAME, [
+            'id'         => $this->primaryKey()->comment('PK'),
+            'tree'       => $this->integer(10)->null()->comment('Идентификатор дерева'),
+            'lft'        => $this->integer(10)->notNull()->comment('Левый ключ NestedSets'),
+            'rgt'        => $this->integer(10)->notNull()->comment('Правый ключ NestedSets'),
+            'depth'      => $this->integer(10)->notNull()->comment('Глубина NestedSets'),
+            'name'       => $this->string(255)->null()->defaultValue('Задайте название категории')->comment('Название категории'),
+            'slug'       => $this->string(255)->notNull()->comment('Slug категории'),
+            'description' => $this->text()->null()->comment('Описание категории'),
+            'meta_json'  => $this->text()->notNull()->comment('JSON мета-данных'),
+            'photo'      => $this->string(255)->null()->comment('Фотография категории'),
+            'status'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('Статус отображения'),
+            'sort_order' => $this->integer(10)->notNull()->defaultValue(0)->comment('Сортировка корней'),
+        ], $this->tableOptions);
+        $this->addCommentOnTable(static::TABLE_NAME, 'Категории товаров (NestedSets)');
+
+        $this->createIndexes(static::TABLE_NAME, 'depth');
+        $this->createIndexes(static::TABLE_NAME, ['tree', 'rgt']);
+        $this->createIndexes(static::TABLE_NAME, ['tree', 'lft', 'rgt']);
+        $this->createIndexes(static::TABLE_NAME, 'slug', false, true);
+
+        parent::safeUp();
+    }
+
+    public function safeDown(): void
+    {
+        parent::safeDown();
+    }
+
+}
