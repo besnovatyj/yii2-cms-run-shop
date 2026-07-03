@@ -1,11 +1,10 @@
 <?php
 
-
 /*
  * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
  */
 
-use CKEditor;
+use Besnovatyj\File\widgets\CkeditorCustomWidget;
 use Besnovatyj\RunShop\entities\product\Product;
 use Besnovatyj\RunShop\forms\backend\product\ProductEditForm;
 use yii\bootstrap5\ActiveForm;
@@ -38,7 +37,10 @@ $this->params['breadcrumbs'][] = 'Update';
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'form-control rounded-0']) ?>
                 </div>
             </div>
-            <?= $form->field($model, 'description')->widget(CKEditor::class) ?>
+            <?= $form->field($model, 'description')->widget(CkeditorCustomWidget::class, [
+                'language' => 'ru',
+                'fmDefaultPath' => '/static/origin/RunShop/products/' . $product->id,
+            ]) ?>
         </div>
         <!-- /.card-body -->
         <div class="card-footer clearfix">

@@ -1,12 +1,10 @@
 <?php
 
-
 /*
  * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
  */
 
-use kartik\widgets\FileInput;
-use CKEditor;
+use Besnovatyj\File\widgets\CkeditorCustomWidget;
 use Besnovatyj\RunShop\forms\backend\product\ProductCreateForm;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
@@ -38,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'form-control rounded-0']) ?>
             </div>
         </div>
-        <?= $form->field($model, 'description')->widget(CKEditor::class) ?>
+        <?= $form->field($model, 'description')->widget(CkeditorCustomWidget::class, ['language' => 'ru']) ?>
     </div>
     <!-- /.card-body -->
     <div class="card-footer clearfix">
@@ -132,19 +130,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- /.card-body -->
     <div class="card-footer clearfix">
 
-    </div>
-</div>
-<div class="card rounded-0">
-    <div class="card-header">Фотографии</div
-    <div class="card-body">
-        <?= $form->field($model->photos, 'files[]')->widget(FileInput::class, [
-            'options' => [
-                'accept' => 'image/*',
-                'multiple' => true,
-            ]
-        ]) ?>
-    </div>
-    <div class="card-footer">
     </div>
 </div>
 <div class="card rounded-0">

@@ -90,6 +90,27 @@ return [
         ],
     ],
 
+    // Категории: изображения (не-древовидное поле — отдельно от TreeManager)
+    [
+        'label' => 'Категории: изображения',
+        'iconClass' => 'bi bi-image me-1',
+        'url' => ['/RunShop/backend/category-image/index'],
+        'active' => static function () {
+            return str_contains(\Yii::$app->request->url, 'RunShop/backend/category-image');
+        },
+        '_meta' => [
+            'placements' => [
+                [
+                    'location' => 'left-sidebar',
+                    'group' => 'Магазин',
+                    'groupIcon' => 'bi bi-shop',
+                    'priority' => 100,
+                    'groupPriority' => 100,
+                ],
+            ],
+        ],
+    ],
+
     // Характеристики
     [
         'label' => 'Характеристики',
