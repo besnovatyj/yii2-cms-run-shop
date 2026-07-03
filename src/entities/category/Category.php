@@ -13,6 +13,8 @@ use Besnovatyj\Meta\MetaBehavior;
 use Besnovatyj\RunShop\entities\product\Product;
 use Besnovatyj\TreeManager\Manager\entities\Node;
 use Besnovatyj\TreeManager\Manager\TreeQueryScope;
+use Besnovatyj\Upload\heap\ThumbnailMode;
+use Besnovatyj\Upload\heap\ThumbnailProfile;
 use Besnovatyj\Upload\heap\UploadBehavior;
 use yii\db\ActiveQuery;
 use yii\web\UploadedFile;
@@ -121,17 +123,15 @@ class Category extends Node
     {
         return [
             MetaBehavior::class,
-            [
-                'class'     => UploadBehavior::class,
-                'attribute' => 'photo',
-                'filePath'  => '@static/origin/RunShop/categories/[[id]].[[extension]]',
-                'fileUrl'   => '@staticHostInfo/origin/RunShop/categories/[[id]].[[extension]]',
-                'thumbPath' => '@static/cache/RunShop/categories/[[profile]]_[[id]].[[extension]]',
-                'thumbUrl'  => '@staticHostInfo/cache/RunShop/categories/[[profile]]_[[id]].[[extension]]',
-                'thumbs'    => [
-                    'admin'        => ['width' => 100, 'height' => 57],
-                    'front_widget' => ['width' => 1200, 'height' => 1200],
+            'photoUpload' => [
+                'class'             => UploadBehavior::class,
+                'attribute'         => 'photo',
+                'pathTemplate'      => 'origin/RunShop/categories/{pk}/{basename}',
+                'thumbnails'        => [
+                    new ThumbnailProfile('admin', width: 100, height: 57, quality: 80, mode: ThumbnailMode::Crop),
+                    new ThumbnailProfile('front_widget', width: 1200, height: 1200, mode: ThumbnailMode::Resize),
                 ],
+                'thumbPathTemplate' => 'cache/RunShop/categories/{pk}/{filename}_{profile}.{extension}',
             ],
             ...parent::behaviors(),
         ];

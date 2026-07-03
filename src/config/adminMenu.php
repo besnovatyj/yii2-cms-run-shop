@@ -9,7 +9,7 @@ return [
     // Заказы
     [
         'label' => 'Заказы',
-        'iconClass' => 'shopping-cart me-1',
+        'iconClass' => 'bi bi-bag-check me-1',
         'url' => ['/RunShop/backend/order/index'],
         'active' => static function () {
             return str_contains(\Yii::$app->request->url, 'RunShop/backend/order');
@@ -30,7 +30,7 @@ return [
     // Товары
     [
         'label' => 'Товары',
-        'iconClass' => 'store-alt me-1',
+        'iconClass' => 'bi bi-box-seam me-1',
         'url' => ['/RunShop/backend/product/index'],
         'active' => static function () {
             return str_contains(\Yii::$app->request->url, 'RunShop/backend/product');
@@ -51,7 +51,7 @@ return [
     // Бренд
     [
         'label' => 'Бренд',
-        'iconClass' => 'bi bi-list-check me-1',
+        'iconClass' => 'bi bi-bookmark-star me-1',
         'url' => ['/RunShop/backend/brand/index'],
         'active' => static function () {
             return str_contains(\Yii::$app->request->url, 'RunShop/backend/brand');
@@ -72,7 +72,7 @@ return [
     // Категории
     [
         'label' => 'Категории',
-        'iconClass' => 'bi bi-diagram-3 me-1',
+        'iconClass' => 'bi bi-list-ol me-1',
         'url' => ['/RunShop/backend/category/index'],
         'active' => static function () {
             return str_contains(\Yii::$app->request->url, 'RunShop/backend/category');
@@ -114,7 +114,7 @@ return [
     // Характеристики
     [
         'label' => 'Характеристики',
-        'iconClass' => 'bi bi-braces-asterisk me-1',
+        'iconClass' => 'bi bi-sliders me-1',
         'url' => ['/RunShop/backend/characteristic/index'],
         'active' => static function () {
             return str_contains(\Yii::$app->request->url, 'RunShop/backend/characteristic');
@@ -156,7 +156,7 @@ return [
     // Скидки
     [
         'label' => 'Скидки',
-        'iconClass' => 'store-alt me-1',
+        'iconClass' => 'bi bi-percent me-1',
         'url' => ['/RunShop/backend/discount/index'],
         'active' => static function () {
             return str_contains(\Yii::$app->request->url, 'RunShop/backend/discount');
