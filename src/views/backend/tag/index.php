@@ -7,7 +7,7 @@
 
 use Besnovatyj\RunShop\entities\Tag;
 use Besnovatyj\RunShop\forms\backend\search\TagSearch;
-use modules\user\components\Helper;
+use Besnovatyj\User\components\Helper;
 use yii\data\ActiveDataProvider;
 use Besnovatyj\Backend\Widgets\grid\ActionColumn;
 use yii\grid\GridView;

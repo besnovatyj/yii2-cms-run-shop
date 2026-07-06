@@ -14,7 +14,7 @@ use Besnovatyj\RunShop\entities\DeliveryMethod;
 use Besnovatyj\RunShop\repositories\events\OrderCanceled;
 use Besnovatyj\RunShop\repositories\events\OrderCreated;
 use Besnovatyj\RunShop\repositories\events\OrderPaid;
-use modules\user\entities\User;
+use Besnovatyj\User\entities\User;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;

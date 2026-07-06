@@ -10,7 +10,7 @@ use Besnovatyj\RunShop\entities\Discount;
 use Besnovatyj\RunShop\forms\backend\search\DiscountSearch;
 use Besnovatyj\RunShop\helpers\DiscountHelper;
 use Besnovatyj\SwitcherColumn\SwitcherColumn;
-use modules\user\components\Helper;
+use Besnovatyj\User\components\Helper;
 use Besnovatyj\Backend\Widgets\pagination\LinkPager;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;

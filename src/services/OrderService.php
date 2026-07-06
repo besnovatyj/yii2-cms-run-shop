@@ -17,8 +17,8 @@ use Besnovatyj\RunShop\forms\frontend\order\OrderForm;
 use Besnovatyj\RunShop\repositories\DeliveryMethodRepository;
 use Besnovatyj\RunShop\repositories\OrderRepository;
 use Besnovatyj\RunShop\repositories\ProductRepository;
-use modules\user\Module;
-use modules\user\repositories\UserRepository;
+use Besnovatyj\User\Module;
+use Besnovatyj\User\repositories\UserRepository;
 use Yii;
 use yii\base\Exception;
 
@@ -131,7 +131,7 @@ class OrderService
     /**
      * @throws Exception
      */
-    public function findOrCreateAnonUser(OrderForm $form): ?\modules\user\entities\User
+    public function findOrCreateAnonUser(OrderForm $form): ?\Besnovatyj\User\entities\User
     {
         // TODO сюда попадают только не аутентифицированные
 
@@ -152,7 +152,7 @@ class OrderService
             $user = $userModule->createUserSilently($form->customer);
 
             // В классе модуля не должно лежать этого метода
-            // public function createUserSilently(\Besnovatyj\RunShop\forms\frontend\order\CustomerForm $customer): \modules\user\entities\User
+            // public function createUserSilently(\Besnovatyj\RunShop\forms\frontend\order\CustomerForm $customer): \Besnovatyj\User\entities\User
             //    {
             //        $form = new SignupForm();
             //        $form->load([

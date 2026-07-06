@@ -8,7 +8,7 @@
 use Besnovatyj\RunShop\entities\product\Characteristic;
 use Besnovatyj\RunShop\forms\backend\search\CharacteristicSearch;
 use Besnovatyj\RunShop\helpers\CharacteristicHelper;
-use modules\user\components\Helper;
+use Besnovatyj\User\components\Helper;
 use Besnovatyj\Backend\Widgets\pagination\LinkPager;
 use yii\data\ActiveDataProvider;
 use Besnovatyj\Backend\Widgets\grid\ActionColumn;

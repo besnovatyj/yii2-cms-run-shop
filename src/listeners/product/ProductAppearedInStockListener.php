@@ -9,8 +9,8 @@ namespace Besnovatyj\RunShop\listeners\product;
 
 use Besnovatyj\RunShop\entities\product\events\ProductAppearedInStock;
 use Besnovatyj\RunShop\entities\product\Product;
-use modules\user\entities\User;
-use modules\user\repositories\UserRepository;
+use Besnovatyj\User\entities\User;
+use Besnovatyj\User\repositories\UserRepository;
 use yii\base\ErrorHandler;
 use yii\mail\MailerInterface;
 

@@ -6,8 +6,8 @@
  */
 
 use yii\bootstrap5\ActiveForm;
-use modules\user\entities\User;
-use modules\user\forms\frontend\UserEditForm;
+use Besnovatyj\User\entities\User;
+use Besnovatyj\User\forms\frontend\UserEditForm;
 use yii\helpers\Html;
 use yii\web\View;
 

@@ -7,7 +7,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $user \modules\user\entities\User */
+/* @var $user \Besnovatyj\User\entities\User */
 /* @var $product \Besnovatyj\RunShop\entities\product\Product */
 ?>
 <h2>Товар снова в наличии</h2>
