@@ -126,6 +126,7 @@ class Category extends Node
             'photoUpload' => [
                 'class'             => UploadBehavior::class,
                 'attribute'         => 'photo',
+                'deleteOnEmpty'     => true,
                 'pathTemplate'      => 'origin/RunShop/categories/{pk}/{basename}',
                 'thumbnails'        => [
                     new ThumbnailProfile('admin', width: 100, height: 57, quality: 80, mode: ThumbnailMode::Crop),

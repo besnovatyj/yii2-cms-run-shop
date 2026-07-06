@@ -22,7 +22,7 @@ class OrderCanceledListener
 
     public function handle(OrderCanceled $event): void
     {
-        $order = $event->order;
+        $order = $event->getOrder();
         $this->toCustomer($order);
         $this->toAdmin($order);
     }

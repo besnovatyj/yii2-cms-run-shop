@@ -7,8 +7,7 @@
 
 namespace Besnovatyj\RunShop\listeners\product;
 
-use Besnovatyj\RunShop\entities\product\Product;
-use Besnovatyj\RunShop\repositories\events\EntityPersisted;
+use Besnovatyj\RunShop\repositories\events\ProductPersisted;
 use Besnovatyj\RunShop\services\search\ProductIndexer;
 use yii\caching\Cache;
 use yii\caching\TagDependency;
@@ -24,15 +23,14 @@ class ProductSearchPersistListener
         $this->cache = $cache;
     }
 
-    public function handle(EntityPersisted $event): void
+    public function handle(ProductPersisted $event): void
     {
-        if ($event->entity instanceof Product) {
-            if ($event->entity->isActive()) {
-                $this->indexer->index($event->entity);
-            } else {
-                $this->indexer->remove($event->entity);
-            }
-            TagDependency::invalidate($this->cache, ['products']);
+        $product = $event->getProduct();
+        if ($product->isActive()) {
+            $this->indexer->index($product);
+        } else {
+            $this->indexer->remove($product);
         }
+        TagDependency::invalidate($this->cache, ['products']);
     }
 }

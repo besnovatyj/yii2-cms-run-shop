@@ -9,8 +9,8 @@ namespace Besnovatyj\RunShop\repositories;
 
 use Besnovatyj\DomainEvents\dispatchers\EventDispatcher;
 use Besnovatyj\RunShop\entities\product\Product;
-use Besnovatyj\RunShop\repositories\events\EntityPersisted;
-use Besnovatyj\RunShop\repositories\events\EntityRemoved;
+use Besnovatyj\RunShop\repositories\events\ProductPersisted;
+use Besnovatyj\RunShop\repositories\events\ProductRemoved;
 
 class ProductRepository
 {
@@ -50,7 +50,7 @@ class ProductRepository
             throw new \RuntimeException('Saving error.');
         }
         $this->dispatcher->dispatchAll($product->releaseEvents());
-        $this->dispatcher->dispatch(new EntityPersisted($product));
+        $this->dispatcher->dispatch(new ProductPersisted($product));
     }
 
     public function remove(Product $product): void
@@ -60,7 +60,7 @@ class ProductRepository
             throw new \RuntimeException('Removing error.');
         }
         $this->dispatcher->dispatchAll($product->releaseEvents());
-        $this->dispatcher->dispatch(new EntityRemoved($product));
+        $this->dispatcher->dispatch(new ProductRemoved($product));
     }
 
     public function count(): int

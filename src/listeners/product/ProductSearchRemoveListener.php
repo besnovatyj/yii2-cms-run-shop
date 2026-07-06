@@ -7,8 +7,7 @@
 
 namespace Besnovatyj\RunShop\listeners\product;
 
-use Besnovatyj\RunShop\entities\product\Product;
-use Besnovatyj\RunShop\repositories\events\EntityRemoved;
+use Besnovatyj\RunShop\repositories\events\ProductRemoved;
 use Besnovatyj\RunShop\services\search\ProductIndexer;
 use yii\caching\Cache;
 use yii\caching\TagDependency;
@@ -24,11 +23,13 @@ class ProductSearchRemoveListener
         $this->cache = $cache;
     }
 
-    public function handle(EntityRemoved $event): void
+    public function handle(ProductRemoved $event): void
     {
-        if ($event->entity instanceof Product) {
-            $this->indexer->remove($event->entity);
-            TagDependency::invalidate($this->cache, ['products']);
-        }
+        // ВНИМАНИЕ: getProduct() перезагружает товар из БД и при жёстком удалении
+        // бросит исключение (строки уже нет). Заработает после перехода на
+        // мягкое удаление; слушатель пока в резерве (не подключён в Bootstrap).
+        $product = $event->getProduct();
+        $this->indexer->remove($product);
+        TagDependency::invalidate($this->cache, ['products']);
     }
 }

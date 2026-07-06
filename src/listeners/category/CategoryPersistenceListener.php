@@ -7,8 +7,7 @@
 
 namespace Besnovatyj\RunShop\listeners\category;
 
-use Besnovatyj\RunShop\entities\category\Category;
-use Besnovatyj\RunShop\repositories\events\EntityPersisted;
+use Besnovatyj\RunShop\repositories\events\CategoryPersisted;
 use yii\caching\Cache;
 use yii\caching\TagDependency;
 
@@ -21,10 +20,10 @@ class CategoryPersistenceListener
         $this->cache = $cache;
     }
 
-    public function handle(EntityPersisted $event): void
+    public function handle(CategoryPersisted $event): void
     {
-        if ($event->entity instanceof Category) {
-            TagDependency::invalidate($this->cache, ['categories']);
-        }
+        // Событие типизировано под категорию — достаточно инвалидировать кеш,
+        // сама сущность здесь не нужна (ленивая перезагрузка не запускается).
+        TagDependency::invalidate($this->cache, ['categories']);
     }
 }

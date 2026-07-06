@@ -22,7 +22,7 @@ class OrderCreatedListener
 
     public function handle(OrderCreated $event): void
     {
-        $order = $event->order;
+        $order = $event->getOrder();
         $this->toCustomer($order);
         $this->toAdmin($order);
     }

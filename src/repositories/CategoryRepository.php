@@ -9,8 +9,8 @@ namespace Besnovatyj\RunShop\repositories;
 
 use Besnovatyj\DomainEvents\dispatchers\EventDispatcher;
 use Besnovatyj\RunShop\entities\category\Category;
-use Besnovatyj\RunShop\repositories\events\EntityPersisted;
-use Besnovatyj\RunShop\repositories\events\EntityRemoved;
+use Besnovatyj\RunShop\repositories\events\CategoryPersisted;
+use Besnovatyj\RunShop\repositories\events\CategoryRemoved;
 use RuntimeException;
 
 class CategoryRepository
@@ -35,7 +35,7 @@ class CategoryRepository
         if (!$category->save()) {
             throw new RuntimeException('Saving error.');
         }
-        $this->dispatcher->dispatch(new EntityPersisted($category));
+        $this->dispatcher->dispatch(new CategoryPersisted($category));
     }
 
     public function remove(Category $category): void
@@ -43,6 +43,6 @@ class CategoryRepository
         if (!$category->delete()) {
             throw new RuntimeException('Removing error.');
         }
-        $this->dispatcher->dispatch(new EntityRemoved($category));
+        $this->dispatcher->dispatch(new CategoryRemoved($category));
     }
 }

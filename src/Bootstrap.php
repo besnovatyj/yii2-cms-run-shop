@@ -16,7 +16,7 @@ use Besnovatyj\RunShop\listeners\order\OrderCanceledListener;
 use Besnovatyj\RunShop\listeners\order\OrderCreatedListener;
 use Besnovatyj\RunShop\listeners\order\OrderPaidListener;
 use Besnovatyj\RunShop\listeners\product\ProductAppearedInStockListener;
-use Besnovatyj\RunShop\repositories\events\EntityPersisted;
+use Besnovatyj\RunShop\repositories\events\CategoryPersisted;
 use Besnovatyj\RunShop\repositories\events\OrderCanceled;
 use Besnovatyj\RunShop\repositories\events\OrderCreated;
 use Besnovatyj\RunShop\repositories\events\OrderPaid;
@@ -50,7 +50,7 @@ class Bootstrap implements BootstrapInterface
         $dispatcher = Yii::$container->get(SimpleEventDispatcher::class);
 
         // Категории (инвалидация кеша) — управляются через TreeManager (AR).
-        $dispatcher->listen(EntityPersisted::class, CategoryPersistenceListener::class);
+        $dispatcher->listen(CategoryPersisted::class, CategoryPersistenceListener::class);
 
         // Заказы (письма покупателю и админу).
         $dispatcher->listen(OrderCreated::class, OrderCreatedListener::class);
@@ -60,12 +60,12 @@ class Bootstrap implements BootstrapInterface
         // Появление товара в наличии (уведомление подписчиков вишлиста).
         $dispatcher->listen(ProductAppearedInStock::class, ProductAppearedInStockListener::class);
 
-        // Дерево категорий пишется через AR — диспетчеризуем EntityPersisted на AR-события категории.
+        // Дерево категорий пишется через AR — диспетчеризуем CategoryPersisted на AR-события категории.
         Event::on(Category::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) use ($dispatcher): void {
-            $dispatcher->dispatch(new EntityPersisted($event->sender));
+            $dispatcher->dispatch(new CategoryPersisted($event->sender));
         });
         Event::on(Category::class, ActiveRecord::EVENT_AFTER_UPDATE, function ($event) use ($dispatcher): void {
-            $dispatcher->dispatch(new EntityPersisted($event->sender));
+            $dispatcher->dispatch(new CategoryPersisted($event->sender));
         });
     }
 }

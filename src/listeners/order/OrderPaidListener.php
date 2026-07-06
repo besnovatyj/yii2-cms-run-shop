@@ -23,7 +23,7 @@ class OrderPaidListener
 
     public function handle(OrderPaid $event): void
     {
-        $order = $event->order;
+        $order = $event->getOrder();
         $this->toCustomer($order);
         $this->toAdmin($order);
     }
