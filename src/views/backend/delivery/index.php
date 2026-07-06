@@ -6,7 +6,7 @@
  */
 
 use Besnovatyj\RunShop\entities\DeliveryMethod;
-use modules\v\forms\backend\search\DeliveryMethodSearch;
+use Besnovatyj\RunShop\forms\backend\search\DeliveryMethodSearch;
 use yii\data\ActiveDataProvider;
 use Besnovatyj\Backend\Widgets\grid\ActionColumn;
 use yii\grid\GridView;
