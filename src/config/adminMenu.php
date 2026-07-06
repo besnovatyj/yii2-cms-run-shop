@@ -18,7 +18,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -39,7 +39,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -60,7 +60,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -81,7 +81,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -102,7 +102,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -123,7 +123,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -144,7 +144,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
@@ -165,7 +165,7 @@ return [
             'placements' => [
                 [
                     'location' => 'left-sidebar',
-                    'group' => 'Магазин',
+                    'group' => 'RunShop',
                     'groupIcon' => 'bi bi-shop',
                     'priority' => 100,
                     'groupPriority' => 100,
