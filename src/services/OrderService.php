@@ -148,7 +148,7 @@ class OrderService
         $user = $this->users->findAnyByEmail($form->customer->email);
         // Если не аутентифицирован и e-mail в базе отсутствует, то создаем запрос на создание юзера с подтверждением через e-mail
         if (!$user) {
-            $userModule = Yii::$app->getModule('user');
+            $userModule = Yii::$app->getModule('User');
             $user = $userModule->createUserSilently($form->customer);
 
             // В классе модуля не должно лежать этого метода
