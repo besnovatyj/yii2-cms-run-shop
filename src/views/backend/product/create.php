@@ -4,7 +4,7 @@
  * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
  */
 
-use Besnovatyj\File\widgets\CkeditorCustomWidget;
+use Besnovatyj\Editor\EditorWidget;
 use Besnovatyj\RunShop\forms\backend\product\ProductCreateForm;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'form-control rounded-0']) ?>
             </div>
         </div>
-        <?= $form->field($model, 'description')->widget(CkeditorCustomWidget::class, ['language' => 'ru']) ?>
+        <?= $form->field($model, 'description')->widget(EditorWidget::class, ['language' => 'ru']) ?>
     </div>
     <!-- /.card-body -->
     <div class="card-footer clearfix">
