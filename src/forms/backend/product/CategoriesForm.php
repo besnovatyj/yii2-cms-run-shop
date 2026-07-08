@@ -19,7 +19,7 @@ class CategoriesForm extends Model
     /** @var int[] $others */
     public $others = [];
 
-    public function __construct(Product $product = null, $config = [])
+    public function __construct(?Product $product = null, $config = [])
     {
         if ($product) {
             $this->main = $product->category_id;

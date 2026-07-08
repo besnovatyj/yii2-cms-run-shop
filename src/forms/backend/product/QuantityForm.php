@@ -14,7 +14,7 @@ class QuantityForm extends Model
 {
     public $quantity = 0;
 
-    public function __construct(Product $product = null, $config = [])
+    public function __construct(?Product $product = null, $config = [])
     {
         if ($product) {
             $this->quantity = $product->quantity;

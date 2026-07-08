@@ -28,7 +28,7 @@ class DiscountForm extends Model
     public $sort;
     private Discount $_discount;
 
-    public function __construct(Discount $discount = null, $config = [])
+    public function __construct(?Discount $discount = null, $config = [])
     {
         if ($discount) {
             $this->percent = $discount->percent;

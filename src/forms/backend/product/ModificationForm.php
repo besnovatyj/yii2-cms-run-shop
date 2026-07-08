@@ -17,7 +17,7 @@ class ModificationForm extends Model
     public $price;
     public $quantity;
 
-    public function __construct(Modification $modification = null, $config = [])
+    public function __construct(?Modification $modification = null, $config = [])
     {
         if ($modification) {
             $this->code = $modification->code;

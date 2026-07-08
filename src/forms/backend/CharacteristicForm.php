@@ -25,7 +25,7 @@ class CharacteristicForm extends Model
 
     private $_characteristic;
 
-    public function __construct(Characteristic $characteristic = null, $config = [])
+    public function __construct(?Characteristic $characteristic = null, $config = [])
     {
         if ($characteristic) {
             $this->name = $characteristic->name;

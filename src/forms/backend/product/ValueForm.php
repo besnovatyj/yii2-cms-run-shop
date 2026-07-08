@@ -20,7 +20,7 @@ class ValueForm extends Model
 
     private Characteristic $_characteristic;
 
-    public function __construct(Characteristic $characteristic, Value $value = null, $config = [])
+    public function __construct(Characteristic $characteristic, ?Value $value = null, $config = [])
     {
         if ($value) {
             $this->value = $value->value;

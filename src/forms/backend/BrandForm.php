@@ -22,7 +22,7 @@ class BrandForm extends CompositeForm
 
     private Brand $_brand;
 
-    public function __construct(Brand $brand = null, $config = [])
+    public function __construct(?Brand $brand = null, $config = [])
     {
         if ($brand) {
             $this->name = $brand->name;

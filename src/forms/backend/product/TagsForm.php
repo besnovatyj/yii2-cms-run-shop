@@ -21,7 +21,7 @@ class TagsForm extends Model
     public $existing = [];
     public $textNew = '';
 
-    public function __construct(Product $product = null, $config = [])
+    public function __construct(?Product $product = null, $config = [])
     {
         if ($product) {
             $this->existing = ArrayHelper::getColumn($product->tagAssignments, 'tag_id');

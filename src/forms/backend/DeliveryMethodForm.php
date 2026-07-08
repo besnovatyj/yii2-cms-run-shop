@@ -18,7 +18,7 @@ class DeliveryMethodForm extends Model
     public $maxWeight;
     public $sort;
 
-    public function __construct(DeliveryMethod $method = null, $config = [])
+    public function __construct(?DeliveryMethod $method = null, $config = [])
     {
         if ($method) {
             $this->name = $method->name;
