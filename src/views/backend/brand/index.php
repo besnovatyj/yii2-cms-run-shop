@@ -8,7 +8,7 @@
 use Besnovatyj\Backend\Widgets\grid\ActionColumn;
 use Besnovatyj\RunShop\entities\Brand;
 use Besnovatyj\RunShop\forms\backend\search\BrandSearch;
-use Besnovatyj\User\components\Helper;
+use Besnovatyj\Kernel\security\AccessHelper;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'slug',
                     ['class' => ActionColumn::class,
-                        'template' => Helper::filterActionColumn(['view', 'update', 'delete',]),
+                        'template' => AccessHelper::filterActionColumn(['view', 'update', 'delete',]),
                     ],
                 ],
             ]); ?>

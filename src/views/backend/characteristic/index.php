@@ -8,7 +8,7 @@
 use Besnovatyj\RunShop\entities\product\Characteristic;
 use Besnovatyj\RunShop\forms\backend\search\CharacteristicSearch;
 use Besnovatyj\RunShop\helpers\CharacteristicHelper;
-use Besnovatyj\User\components\Helper;
+use Besnovatyj\Kernel\security\AccessHelper;
 use Besnovatyj\Backend\Widgets\pagination\LinkPager;
 use yii\data\ActiveDataProvider;
 use Besnovatyj\Backend\Widgets\grid\ActionColumn;
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'boolean',
                 ],
                 ['class' => ActionColumn::class,
-                    'template' => Helper::filterActionColumn(['view', 'update', 'delete',]),
+                    'template' => AccessHelper::filterActionColumn(['view', 'update', 'delete',]),
                 ],
             ],
         ]); ?>

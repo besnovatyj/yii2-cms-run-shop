@@ -10,7 +10,7 @@ use Besnovatyj\RunShop\entities\Discount;
 use Besnovatyj\RunShop\forms\backend\search\DiscountSearch;
 use Besnovatyj\RunShop\helpers\DiscountHelper;
 use Besnovatyj\SwitcherColumn\SwitcherColumn;
-use Besnovatyj\User\components\Helper;
+use Besnovatyj\Kernel\security\AccessHelper;
 use Besnovatyj\Backend\Widgets\pagination\LinkPager;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => 'raw',
                 ],
                 ['class' => ActionColumn::class,
-                    'template' => Helper::filterActionColumn(['view', 'update', 'delete',]),
+                    'template' => AccessHelper::filterActionColumn(['view', 'update', 'delete',]),
                 ],
             ],
         ]); ?>
