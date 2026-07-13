@@ -10,6 +10,7 @@ namespace Besnovatyj\RunShop;
 
 use Besnovatyj\Contracts\module\DeclaresModule;
 use Besnovatyj\Contracts\module\ProvidesAdminMenu;
+use Besnovatyj\Contracts\module\ProvidesBootstrap;
 use Besnovatyj\Contracts\module\ProvidesDirectories;
 use Besnovatyj\Contracts\module\ProvidesMigrations;
 use Besnovatyj\Contracts\module\ProvidesOptions;
@@ -21,6 +22,7 @@ use Besnovatyj\Kernel\module\CmsModule;
 class Module extends CmsModule implements
     DeclaresModule,
     ProvidesAdminMenu,
+    ProvidesBootstrap,
     ProvidesDirectories,
     ProvidesMigrations,
     ProvidesOptions
@@ -38,4 +40,5 @@ class Module extends CmsModule implements
     public static function migrationPath(): string { return __DIR__ . '/migrations'; }
     public static function migrationNamespace(): ?string { return __NAMESPACE__ . '\\migrations'; }
     public static function directories(): array { return ['@static/origin/RunShop', '@static/cache/RunShop']; }
+    public static function bootstrapClasses(): array { return [Bootstrap::class]; }
 }
