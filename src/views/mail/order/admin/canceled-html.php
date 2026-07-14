@@ -13,4 +13,4 @@ use yii\helpers\Html;
 <?php if ($order->cancel_reason): ?>
     <p>Причина: <?= Html::encode((string) $order->cancel_reason) ?></p>
 <?php endif; ?>
-<?= $this->render('@Besnovatyj/RunShop/mails/_order-summary', ['order' => $order]) ?>
+<?= $this->render('@Besnovatyj/RunShop/views/mail/_order-summary', ['order' => $order]) ?>

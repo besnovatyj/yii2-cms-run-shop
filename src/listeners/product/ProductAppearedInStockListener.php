@@ -46,7 +46,7 @@ class ProductAppearedInStockListener
     {
         $sent = $this->mailer
             ->compose(
-                ['html' => '@Besnovatyj/RunShop/mails/available-html', 'text' => '@Besnovatyj/RunShop/mails/available-text'],
+                ['html' => '@Besnovatyj/RunShop/views/mail/available-html', 'text' => '@Besnovatyj/RunShop/views/mail/available-text'],
                 ['user' => $user, 'product' => $product]
             )
             ->setTo($user->email)

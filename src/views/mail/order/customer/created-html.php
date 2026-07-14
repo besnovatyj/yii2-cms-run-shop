@@ -12,4 +12,4 @@ use yii\helpers\Html;
 <h2>Ваш заказ успешно создан</h2>
 <p>Здравствуйте, <?= Html::encode($order->customerData->firstName) ?>!</p>
 <p>Мы получили ваш заказ и ожидаем оплату.</p>
-<?= $this->render('@Besnovatyj/RunShop/mails/_order-summary', ['order' => $order]) ?>
+<?= $this->render('@Besnovatyj/RunShop/views/mail/_order-summary', ['order' => $order]) ?>

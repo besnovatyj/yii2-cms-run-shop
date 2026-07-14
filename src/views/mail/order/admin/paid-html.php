@@ -8,4 +8,4 @@
 /* @var $order \Besnovatyj\RunShop\entities\order\Order */
 ?>
 <h2>Заказ №<?= (int) $order->id ?> оплачен</h2>
-<?= $this->render('@Besnovatyj/RunShop/mails/_order-summary', ['order' => $order]) ?>
+<?= $this->render('@Besnovatyj/RunShop/views/mail/_order-summary', ['order' => $order]) ?>

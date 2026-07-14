@@ -30,8 +30,10 @@ use yii\db\ActiveRecord;
  *
  * Подписывает слушателей на доменные события. События отложенные (DeferredEventDispatcher → очередь),
  * поэтому письма о заказе/наличии шлются в очередь-воркере, а не в транзакции оформления.
- * Почтовые шаблоны лежат в `src/mails` и доступны по alias `@Besnovatyj/RunShop/mails/...`
- * (alias регистрируется фреймворком из PSR-4 автозагрузки пакета).
+ * Почтовые шаблоны лежат в `src/views/mail` и доступны по alias `@Besnovatyj/RunShop/views/mail/...`
+ * (alias регистрируется фреймворком из PSR-4 автозагрузки пакета). Расположение под `views/`
+ * НЕ случайно: так письма попадают под ту же карту представлений, что и обычные view, и темизуются
+ * оверлеем `@themes/{theme}/modules/RunShop/views/mail/...` (см. ANALYSIS_MODULES_INTEGRATION.MD, §6).
  *
  * НЕ подключены поисковые слушатели (`ProductSearchPersist/RemoveListener`) — Elasticsearch-индексатор
  * (`services\search\ProductIndexer`) в этой сборке не используется (резерв).
@@ -44,7 +46,7 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app): void
     {
         // Alias `@Besnovatyj/RunShop` регистрируется фреймворком (yii2-composer) из PSR-4 автозагрузки —
-        // почтовые шаблоны доступны как `@Besnovatyj/RunShop/mails/...`.
+        // почтовые шаблоны доступны как `@Besnovatyj/RunShop/views/mail/...`.
 
         /** @var SimpleEventDispatcher $dispatcher */
         $dispatcher = Yii::$container->get(SimpleEventDispatcher::class);
