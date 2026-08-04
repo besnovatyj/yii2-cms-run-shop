@@ -37,7 +37,7 @@ class CategoriesWidget extends Widget
                 && ($this->active->id == $category->id || $scope->isDescendantOf($this->active, $category));
             return Html::a(
                 $indent . Html::encode($category->name),
-                ['/RunShop/catalog/category', 'id' => $category->id],
+                ['/RunShop/catalog/category', 'slug' => $category->slug],
                 ['class' => $active ? 'list-group-item active' : 'list-group-item']
             );
         }, $this->categories->getTreeWithSubsOf($this->active))), [

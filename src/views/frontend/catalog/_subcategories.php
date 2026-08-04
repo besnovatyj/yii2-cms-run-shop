@@ -18,7 +18,7 @@ $children = $category->getChildrenList();
     <div class="panel panel-default">
         <div class="panel-body">
             <?php foreach ($children as $child): ?>
-                <a href="<?= Html::encode(Url::to(['/RunShop/catalog/category', 'id' => $child->id])) ?>"><?= Html::encode($child->name) ?></a> &nbsp;
+                <a href="<?= Html::encode(Url::to(['/RunShop/catalog/category', 'slug' => $child->slug])) ?>"><?= Html::encode($child->name) ?></a> &nbsp;
             <?php endforeach; ?>
         </div>
     </div>
