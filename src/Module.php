@@ -17,7 +17,8 @@ use Besnovatyj\Contracts\module\ProvidesOptions;
 use Besnovatyj\Contracts\menu\MenuTarget;
 use Besnovatyj\Contracts\menu\MenuTargetProvider;
 use Besnovatyj\Kernel\module\CmsModule;
-use Besnovatyj\RunShop\readModels\CategoryReadRepository;
+use Besnovatyj\RunShop\entities\category\Category;
+use Besnovatyj\TreeManager\Manager\TreeQueryScope;
 
 /**
  * Модуль магазина RunShop (полнофункциональный: Yookassa, Wishlist, Coupon, OrderMerchant).
@@ -79,11 +80,6 @@ class Module extends CmsModule implements
      */
     private function categorySlugMap(): array
     {
-        $map = [];
-        foreach ((new CategoryReadRepository())->getAll() as $category) {
-            $prefix = $category->depth > 0 ? str_repeat('— ', (int)$category->depth) : '';
-            $map[$category->slug] = $prefix . $category->name;
-        }
-        return $map;
+        return (new TreeQueryScope(Category::class))->dropdownTree(keyAttribute: 'slug', indent: '— ');
     }
 }
