@@ -42,7 +42,7 @@
     "yiisoft/yii2-bootstrap5": "~2.0.0",
     "besnovatyj/yii2-cms-meta": "^1.0",
     "besnovatyj/yii2-cms-forms": "^1.0",
-    "besnovatyj/yii2-cms-upload": "^1.0",
+    "besnovatyj/yii2-cms-upload": "^2.0",
     "besnovatyj/yii2-cms-images": "^1.0",
     "besnovatyj/yii2-cms-validators": "^1.0",
     "besnovatyj/yii2-cms-backend-widgets": "^1.0",
